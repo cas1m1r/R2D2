@@ -56,10 +56,10 @@ async def ask_llm(ctx, *arg):
 	except:
 		reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
 		pass
-	await send_discord_reply(ctx, reply)
+	await send_discord_reply(ctx, reply.split('</think>')[-1])
 
 
-@bot.command(name='code',aliases=['w'])
+@bot.command(name='code',aliases=['w','write'])
 async def vibe_code(ctx, *arg):
 	global llms
 	prompt = ' '.join(arg[:])
@@ -74,7 +74,7 @@ async def vibe_code(ctx, *arg):
 	except:
 		reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
 		pass
-	await send_discord_reply(ctx, reply)
+	await send_discord_reply(ctx, reply.split('</think>')[-1])
 
 
 @bot.command(name='delete-model',aliases=['rm-model'])
