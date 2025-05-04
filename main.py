@@ -51,12 +51,40 @@ async def ask_llm(ctx, *arg):
 		time.sleep(0.1)
 		await ctx.send(':robot:')
 	client = setup_client(URL)
-	try:
-		reply = ask_model(client, llms['chat'], question).message.content
-	except:
-		reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
-		pass
-	await send_discord_reply(ctx, reply.split('</think>')[-1])
+
+	# check for attachments
+	if ctx.message.attachments:
+		if not os.path.isdir('storage'):
+			os.mkdir('storage')
+		f = ''
+		local_path = ''
+		for attachment in ctx.message.attachments:
+			local_path = os.path.join(os.getcwd(), 'storage', attachment.filename)
+			local_file = await attachment.save(local_path)
+			print(f'[+] Saved local copy of {attachment.filename}')
+			f = local_path
+			break
+		img_ext = ['png', 'jpg',' jpeg']
+		# check if ext is an image
+		if f!='' and local_path !='':
+			ext = f.split('.')[-1]
+			if ext in img_ext:
+				with open(local_path,'rb') as fd:
+					idata = fd.read()
+				fd.close()
+				try:
+					reply = ask_model_with_image(client,llms['chat'],question,idata).message.content
+				except:
+					reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
+					pass
+				await send_discord_reply(ctx, reply.split('</think>')[-1])
+	else:
+		try:
+			reply = ask_model(client, llms['chat'], question).message.content
+		except:
+			reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
+			pass
+		await send_discord_reply(ctx, reply.split('</think>')[-1])
 
 
 @bot.command(name='code',aliases=['w','write'])

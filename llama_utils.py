@@ -1,5 +1,5 @@
 from ollama import Client
-
+import base64
 
 def setup_client(host):
     return Client(host=f'http://{host}:11434', headers={'Content-Type': 'application/json'})
@@ -21,6 +21,17 @@ def ask_model(client, model, prompt):
       },
     ])
     return response
+
+
+def ask_model_with_image(client, model, prompt, img_data):
+    messages = [
+        {
+            "role": "user",
+            "content": prompt,
+            "images": [base64.b64encode(img_data).decode('utf-8')]
+        }
+    ]
+    return client.chat(model=model,messages=messages)
 
 
 def delete_model(client, model):
