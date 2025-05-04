@@ -51,7 +51,7 @@ async def ask_llm(ctx, *arg):
 		await ctx.send(':robot:')
 	client = setup_client(URL)
 	try:
-		reply = ask_model(client,'gemma3:4b', question).message.content
+		reply = ask_model(client, llms['chat'][0], question).message.content
 	except:
 		reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
 		pass
@@ -68,7 +68,7 @@ async def vibe_code(ctx, *arg):
 		await ctx.send(':robot:')
 	client = setup_client(URL)
 	try:
-		reply = ask_model(client,'qwen2.5-coder:7b', prompt).message.content
+		reply = ask_model(client, llms['code'][0], prompt).message.content
 	except:
 		reply = ':x: **ERROR** Sorry about that. Something seems to have gone wrong.'
 		pass
